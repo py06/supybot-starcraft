@@ -67,10 +67,14 @@ class SC(callbacks.Plugin):
         irc.reply("A new game will start soon, please register with wannaplay command")
     callgame = wrap(callgame)
 
-    def wannaplay(self, irc, msg, args):
-        self.players.append(msg.nick)
-        irc.reply(msg.nick + " is registered for next game");
-    wannaplay = wrap(wannaplay)
+    def wannaplay(self, irc, msg, args, player):
+        if (player):
+            self.players.append(player)
+            irc.reply(player + " is registered for next game");
+        else:
+            self.players.append(msg.nick)
+            irc.reply(msg.nick + " is registered for next game");
+    wannaplay = wrap(wannaplay, [additional('text')])
 
 
     def team(self, irc, msg, args):
@@ -84,6 +88,7 @@ class SC(callbacks.Plugin):
         irc.reply("Team 1 = " + utils.str.commaAndify(team1))
         irc.reply("Team 2 = " + utils.str.commaAndify(team2))
     team = wrap(team)
+
 
 Class = SC
 
