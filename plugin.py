@@ -38,11 +38,15 @@ import random
 
 
 class SC(callbacks.Plugin):
-    """Add the help for "@plugin help SC" here
-    This should describe *how* to use this plugin."""
+    """Manage Star Craft games
+    callgame <delay>: Call for a new game on the channel.
+                      People need to declare themself if they
+                      want to take part
+    wannaplay: People willing to take part in next game use this command
+    team: select teams from the list of registered players"""
     pass
 
-    players = ["vstehle", "xroumegue", "demathif", "abouyer", "lorino", "manu"]
+    players = []
 
     def __init__(self, irc):
         self.__parent = super(SC, self)
@@ -50,7 +54,28 @@ class SC(callbacks.Plugin):
         self.rng = random.Random()   # create our rng
         self.rng.seed()   # automatically seeds with current time
 
+    def help(self, irc, msg, args):
+        self.players = []
+        irc.reply("Star Craft game manager:")
+        irc.reply("callgame: reset and call for a new game")
+        irc.reply("wannaplay: use this command to indicate you want to play in next game")
+        irc.reply("team: pick teams at random")
+    help = wrap(help)
+
+    def callgame(self, irc, msg, args):
+        self.players = []
+        irc.reply("A new game will start soon, please register with wannaplay command")
+    callgame = wrap(callgame)
+
+    def wannaplay(self, irc, msg, args):
+        self.players.append(msg.nick)
+        irc.reply(msg.nick + " is registered for next game");
+    wannaplay = wrap(wannaplay)
+
+
     def team(self, irc, msg, args):
+        if (len(self.players) % 2):
+            self.players.append('cpu')
         l = len(self.players) / 2
         random.shuffle(self.players)
         team1 = [ self.players[i] for i in range(l)]
