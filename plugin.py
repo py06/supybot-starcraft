@@ -39,14 +39,17 @@ import random
 
 class SC(callbacks.Plugin):
     """Manage Star Craft games
-    callgame <delay>: Call for a new game on the channel.
+    callgame: Call for a new game on the channel.
                       People need to declare themself if they
                       want to take part
-    wannaplay: People willing to take part in next game use this command
+    wannaplay [name]: People willing to take part in next game use this command
+    who: list already registered player
     team: select teams from the list of registered players"""
     pass
 
     players = []
+    team1 = []
+    team2 = []
 
     def __init__(self, irc):
         self.__parent = super(SC, self)
@@ -55,15 +58,17 @@ class SC(callbacks.Plugin):
         self.rng.seed()   # automatically seeds with current time
 
     def help(self, irc, msg, args):
-        self.players = []
         irc.reply("Star Craft game manager:")
         irc.reply("callgame: reset and call for a new game")
-        irc.reply("wannaplay: use this command to indicate you want to play in next game")
+        irc.reply("wannaplay [name]: use this command to indicate you (or specified name)  want to play in next game")
+        irc.reply("who: list already registered player")
         irc.reply("team: pick teams at random")
     help = wrap(help)
 
     def callgame(self, irc, msg, args):
         self.players = []
+        self.team1 = []
+        self.team2 = []
         irc.reply("A new game will start soon, please register with wannaplay command")
     callgame = wrap(callgame)
 
@@ -76,19 +81,22 @@ class SC(callbacks.Plugin):
             irc.reply(msg.nick + " is registered for next game");
     wannaplay = wrap(wannaplay, [additional('text')])
 
+    def who(self, irc, msg, args):
+        irc.reply("Already registered = " + utils.str.commaAndify(self.players))
+    who = wrap(who)
+
 
     def team(self, irc, msg, args):
         if (len(self.players) % 2):
             self.players.append('cpu')
         l = len(self.players) / 2
         random.shuffle(self.players)
-        team1 = [ self.players[i] for i in range(l)]
-        team2 = [ self.players[i] for i in range(l, len(self.players))]
+        self.team1 = [ self.players[i] for i in range(l)]
+        self.team2 = [ self.players[i] for i in range(l, len(self.players))]
         irc.reply("Selected teams are:")
         irc.reply("Team 1 = " + utils.str.commaAndify(team1))
         irc.reply("Team 2 = " + utils.str.commaAndify(team2))
     team = wrap(team)
-
 
 Class = SC
 
