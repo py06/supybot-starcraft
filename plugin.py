@@ -94,8 +94,8 @@ class SC(callbacks.Plugin):
         self.team1 = [ self.players[i] for i in range(l)]
         self.team2 = [ self.players[i] for i in range(l, len(self.players))]
         irc.reply("Selected teams are:")
-        irc.reply("Team 1 = " + utils.str.commaAndify(team1))
-        irc.reply("Team 2 = " + utils.str.commaAndify(team2))
+        irc.reply("Team 1 = " + utils.str.commaAndify(self.team1))
+        irc.reply("Team 2 = " + utils.str.commaAndify(self.team2))
     team = wrap(team)
 
 Class = SC
