@@ -87,12 +87,13 @@ class SC(callbacks.Plugin):
 
 
     def team(self, irc, msg, args):
+        tmp = list(self.players)
         if (len(self.players) % 2):
-            self.players.append('cpu')
-        l = len(self.players) / 2
-        random.shuffle(self.players)
-        self.team1 = [ self.players[i] for i in range(l)]
-        self.team2 = [ self.players[i] for i in range(l, len(self.players))]
+            tmp.append('cpu')
+        l = len(tmp) / 2
+        random.shuffle(tmp)
+        self.team1 = [ tmp[i] for i in range(l)]
+        self.team2 = [ tmp[i] for i in range(l, len(tmp))]
         irc.reply("Selected teams are:")
         irc.reply("Team 1 = " + utils.str.commaAndify(self.team1))
         irc.reply("Team 2 = " + utils.str.commaAndify(self.team2))
