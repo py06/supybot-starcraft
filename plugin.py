@@ -43,6 +43,7 @@ class SC(callbacks.Plugin):
                       People need to declare themself if they
                       want to take part
     wannaplay [name]: People willing to take part in next game use this command
+    sideline [name]: if you dont want to play, remove yourself or the specified nick from the registered players
     who: list already registered player
     team: select teams from the list of registered players"""
     pass
@@ -61,6 +62,7 @@ class SC(callbacks.Plugin):
         irc.reply("Star Craft game manager:")
         irc.reply("callgame: reset and call for a new game")
         irc.reply("wannaplay [name]: use this command to indicate you (or specified name)  want to play in next game")
+        irc.reply("sideline [name]: if you dont want to play, remove yourself or the specified nick from the registered players")
         irc.reply("who: list already registered player")
         irc.reply("team: pick teams at random")
     help = wrap(help)
@@ -85,6 +87,14 @@ class SC(callbacks.Plugin):
         irc.reply("Already registered = " + utils.str.commaAndify(self.players))
     who = wrap(who)
 
+    def sideline(self, irc, msg, args, player):
+        if (player):
+            self.players.remove(player)
+            irc.reply(player + " is unregistered for next game");
+        else:
+            self.players.remove(msg.nick)
+            irc.reply(msg.nick + " is unregistered for next game");
+    sideline = wrap(sideline, [additional('text')])
 
     def team(self, irc, msg, args):
         tmp = list(self.players)
